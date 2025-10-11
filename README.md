@@ -6,11 +6,11 @@ This application is used to easily view through all images in a folder and to so
 Application is build in python and compiled to .exe
 
 # How to use
-Open the compiled application.
-Select the folder containing all the folders
-Define up to 5 new folders linked to numpad key presses.
-Use arrow keys to go through images.
-Press numpad key to order image to the defined folder.
+1. Open the compiled application.
+2. Select the folder containing all the folders
+3. Define up to 5 new folders linked to numpad key presses.
+4. Use arrow keys to go through images.
+5. Press numpad key to order image to the defined folder.
 
 
 ## Requirements
