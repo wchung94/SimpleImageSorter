@@ -5,6 +5,9 @@ This application is used to easily view through all images in a folder and to so
 
 Application is build in python and compiled to .exe
 
+![Example Gui](./example_app.png)
+
+
 # How to use
 1. Open the compiled application.
 2. Select the folder containing all the folders
@@ -14,7 +17,7 @@ Application is build in python and compiled to .exe
 
 
 ## Requirements
-Computer that can run .exe
+Windows Computer that can run .exe
 1 GB RAM
 16 GB HDD
 
