@@ -5,7 +5,7 @@ This application is used to easily view through all images in a folder and to so
 
 Application is build in python and compiled to .exe
 
-![Example Gui](./example_app.png)
+![Example Gui](./readme/example_app.png)
 
 
 # How to use
