@@ -1,6 +1,7 @@
-from PyQt6.QtWidgets import QLabel, QMainWindow, QFileDialog, QMenuBar, QMenu, QApplication
-from PyQt6.QtGui import QPixmap, QImage
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (QLabel, QMainWindow, QFileDialog, QMenuBar, QMenu, 
+                             QApplication, QListWidget, QListWidgetItem, QSplitter)
+from PyQt6.QtGui import QPixmap, QImage, QIcon
+from PyQt6.QtCore import Qt, QSize
 import sys
 import os
 
@@ -15,10 +16,29 @@ class MainWindow(QMainWindow):
         self.image_files = []
         self.current_image_index = -1
         
-        # Create a label to display the image
+        # Create image label
         self.image_label = QLabel()
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setCentralWidget(self.image_label)
+        
+        # Create file list widget
+        self.file_list = QListWidget()
+        self.file_list.setIconSize(QSize(64, 64))
+        self.file_list.setViewMode(QListWidget.ViewMode.IconMode)
+        self.file_list.setResizeMode(QListWidget.ResizeMode.Adjust)
+        self.file_list.setWrapping(True)
+        self.file_list.setSpacing(10)
+        self.file_list.itemClicked.connect(self.on_file_selected)
+        # Disable keyboard navigation in the file list
+        self.file_list.setMovement(QListWidget.Movement.Static)
+        # Make the file list not accept focus
+        self.file_list.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        
+        # Create splitter
+        self.splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.splitter.addWidget(self.file_list)
+        self.splitter.addWidget(self.image_label)
+        self.splitter.setStretchFactor(1, 1)  # Make image viewer stretch more than sidebar
+        self.setCentralWidget(self.splitter)
         
         # Create menu bar
         self.create_menu_bar()
@@ -92,6 +112,16 @@ class MainWindow(QMainWindow):
             self.current_folder = folder_path
             self.load_folder_images()
     
+    def create_thumbnail(self, image_path):
+        """Create a thumbnail for the image list."""
+        pixmap = QPixmap(image_path)
+        scaled_pixmap = pixmap.scaled(
+            64, 64,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        )
+        return scaled_pixmap
+        
     def load_folder_images(self):
         """Load all image files from the current folder."""
         if not self.current_folder:
@@ -99,6 +129,9 @@ class MainWindow(QMainWindow):
             
         # Supported image formats
         image_extensions = ('.png', '.jpg', '.jpeg', '.bmp', '.gif')
+        
+        # Clear current list
+        self.file_list.clear()
         
         # Get all image files in the folder
         self.image_files = [
@@ -110,10 +143,20 @@ class MainWindow(QMainWindow):
         # Sort the files alphabetically
         self.image_files.sort()
         
+        # Add images to the list widget with thumbnails
+        for image_path in self.image_files:
+            item = QListWidgetItem()
+            item.setIcon(QIcon(self.create_thumbnail(image_path)))
+            item.setText(os.path.basename(image_path))
+            item.setData(Qt.ItemDataRole.UserRole, image_path)  # Store full path
+            self.file_list.addItem(item)
+        
         # Load the first image if available
         if self.image_files:
             self.current_image_index = 0
             self.load_image(self.image_files[0])
+            # Select the first item
+            self.file_list.setCurrentRow(0)
         else:
             self.current_image_index = -1
             self.image_label.clear()
@@ -128,13 +171,22 @@ class MainWindow(QMainWindow):
         else:
             super().keyPressEvent(event)
     
+    def on_file_selected(self, item):
+        """Handle file selection from the list."""
+        file_path = item.data(Qt.ItemDataRole.UserRole)
+        self.current_image_index = self.image_files.index(file_path)
+        self.load_image(file_path)
+        self.update_status_bar()
+    
     def next_image(self):
         """Load the next image in the folder."""
         if not self.image_files or self.current_image_index == -1:
             return
             
         self.current_image_index = (self.current_image_index + 1) % len(self.image_files)
+        print(self.current_image_index )
         self.load_image(self.image_files[self.current_image_index])
+        self.file_list.setCurrentRow(self.current_image_index)
         self.update_status_bar()
     
     def previous_image(self):
@@ -144,6 +196,7 @@ class MainWindow(QMainWindow):
             
         self.current_image_index = (self.current_image_index - 1) % len(self.image_files)
         self.load_image(self.image_files[self.current_image_index])
+        self.file_list.setCurrentRow(self.current_image_index)
         self.update_status_bar()
     
     def update_status_bar(self):
