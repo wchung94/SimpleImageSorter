@@ -1,9 +1,9 @@
-import os
-
-def main():
-    print("hello world")
-    os.system("python ./app/ImageViewer.py")
+import sys
+from PyQt6.QtWidgets import QApplication
+from app.image_viewer import MainWindow
 
 if __name__ == '__main__':
-    # Execute when the module is not initialized from an import statement.
-    main()
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
