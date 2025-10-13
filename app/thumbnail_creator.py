@@ -1,4 +1,5 @@
 from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
 
 def create_thumbnail(image_path):
     """Create a thumbnail for the image."""

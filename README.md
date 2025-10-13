@@ -5,13 +5,15 @@ This application is used to easily view through all images in a folder and to so
 
 Application is build in python and compiled to .exe
 
-/Users/wingchung/Documents/repos/SimpleImageSorter/app/
+```
+./SimpleImageSorter/
     ├── main.py
-    ├── image_viewer.py
-    ├── image_loader.py
-    ├── thumbnail_creator.py
-    └── file_operations.py
-
+    app/
+        ├── image_viewer.py
+        ├── image_loader.py
+        ├── thumbnail_creator.py
+        └── file_operations.py
+```
 ![Example Gui](./readme/example_app.png)
 
 
@@ -24,9 +26,8 @@ Application is build in python and compiled to .exe
 
 
 ## Requirements
-Windows Computer that can run .exe
-1 GB RAM
-16 GB HDD
-
+- Windows Computer that can run .exe
+- 1 GB RAM
+- 16 GB HDD
 
 

@@ -3,9 +3,9 @@ from PyQt6.QtWidgets import (QLabel, QMainWindow, QFileDialog, QListWidget,
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt, QSize
 import os
-from image_loader import load_image, load_folder_images
-from thumbnail_creator import create_thumbnail
-from file_operations import copy_current_image_to_new_folder
+from .image_loader import load_image, load_folder_images
+from .thumbnail_creator import create_thumbnail
+from .file_operations import copy_current_image_to_new_folder
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -18,6 +18,12 @@ class MainWindow(QMainWindow):
         self.image_files = []
         self.current_image_index = -1
         self.new_folder_path = ""
+
+        # Create menu bar
+        self.create_menu_bar()
+        
+        # Create status bar
+        self.statusBar().show()
         
         # Create image label
         self.image_label = QLabel()
@@ -48,6 +54,20 @@ class MainWindow(QMainWindow):
 
         # Create status bar
         self.statusBar().show()
+
+
+    def create_menu_bar(self):
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu("File")
+        
+        # Add Open File action
+        open_file_action = file_menu.addAction("Open File")
+        open_file_action.triggered.connect(self.open_image)
+        
+        # Add Open Folder action
+        open_folder_action = file_menu.addAction("Open Folder")
+        open_folder_action.triggered.connect(self.open_folder)
+
 
     def open_image(self):
         file_name, _ = QFileDialog.getOpenFileName(
@@ -81,7 +101,7 @@ class MainWindow(QMainWindow):
         
         if self.image_files:
             self.current_image_index = 0
-            self.load_image(self.image_files[0])
+            load_image(self.image_files[0], self.image_label)
             self.file_list.setCurrentRow(0)
         else:
             self.current_image_index = -1
@@ -120,6 +140,9 @@ class MainWindow(QMainWindow):
         self.file_list.setCurrentRow(self.current_image_index)
 
     def select_new_folder(self):
+        """Select a new folder to copy images to."""
         self.new_folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
         if self.new_folder_path:
+            folder_name = os.path.basename(self.new_folder_path)  # Get the name of the folder
+            self.select_folder_button.setText(folder_name)  # Update button text to the folder name
             print(f"New folder selected: {self.new_folder_path}")
