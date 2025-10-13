@@ -5,6 +5,13 @@ This application is used to easily view through all images in a folder and to so
 
 Application is build in python and compiled to .exe
 
+/Users/wingchung/Documents/repos/SimpleImageSorter/app/
+    ├── main.py
+    ├── image_viewer.py
+    ├── image_loader.py
+    ├── thumbnail_creator.py
+    └── file_operations.py
+
 ![Example Gui](./readme/example_app.png)
 
 
