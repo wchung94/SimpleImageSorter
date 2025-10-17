@@ -19,15 +19,15 @@ Application is build in python and compiled to .exe
 
 # How to use
 1. Open the compiled application.
-2. Select the folder containing all the folders
-3. Define up to 5 new folders linked to numpad key presses.
-4. Use arrow keys to go through images.
-5. Press numpad key to order image to the defined folder.
+2. Select the main image folder containing all the images from the `menu bar` on top
+3. Define up to 3 new folders linked to numerical key presses `1`, `2`, `3`.
+4. Use arrow keys to go through images. `Down` and `Right` to go to next image. `Up` and `Left` to go back to previous image
+5. Press the designated numerical key to copy image to the respective folder.
 
 
 ## Requirements
 - Windows Computer that can run .exe
-- 1 GB RAM
-- 16 GB HDD
+- 512 MB RAM
+- 4 GB HDD
 
 
