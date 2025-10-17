@@ -149,6 +149,14 @@ class MainWindow(QMainWindow):
                     self.image_files, 
                     self.current_image_index
                 )
+        elif event.key() == Qt.Key.Key_3:
+            tab = self.tabs.widget(2)  # Get second tab
+            if tab and tab.get_folder_path():
+                copy_current_image_to_new_folder(
+                    tab.get_folder_path(), 
+                    self.image_files, 
+                    self.current_image_index
+                )
 
     def on_file_selected(self, item):
         file_path = item.data(Qt.ItemDataRole.UserRole)
@@ -170,11 +178,3 @@ class MainWindow(QMainWindow):
         self.current_image_index = (self.current_image_index - 1) % len(self.image_files)
         load_image(self.image_files[self.current_image_index], self.image_label)
         self.file_list.setCurrentRow(self.current_image_index)
-
-    # def select_new_folder(self):
-    #     """Select a new folder to copy images to."""
-    #     self.new_folder_path = QFileDialog.getExistingDirectory(self, "Select Folder 1")
-    #     if self.new_folder_path:
-    #         folder_name = os.path.basename(self.new_folder_path)  # Get the name of the folder
-    #         self.select_folder_button.setText(folder_name)  # Update button text to the folder name
-    #         print(f"New folder selected: {self.new_folder_path}")

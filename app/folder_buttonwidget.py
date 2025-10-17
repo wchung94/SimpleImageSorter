@@ -8,8 +8,9 @@ class FolderTab(QTabWidget):
         self.setMovable(True)
         
         # Initialize tabs with empty folders
-        self.addTab(FolderWidget("Folder 1"), "Select Folder 1")
-        self.addTab(FolderWidget("Folder 2"), "Select Folder 2")
+        self.addTab(FolderWidget("Folder 1"), "[1] Select Folder")
+        self.addTab(FolderWidget("Folder 2"), "[2] Select Folder")
+        self.addTab(FolderWidget("Folder 2"), "[3] Select Folder")
         
         # Connect tab clicked event
         self.tabBarClicked.connect(self.handle_tab_click)
