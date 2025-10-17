@@ -1,7 +1,8 @@
 from PyQt6.QtWidgets import (QLabel, QMainWindow, QFileDialog, QListWidget, 
-                             QListWidgetItem, QSplitter, QPushButton)
+                             QListWidgetItem, QSplitter, QPushButton, QTabWidget)
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt, QSize
+from .folder_buttonwidget import FolderTab
 import os
 from .image_loader import load_image, load_folder_images
 from .thumbnail_creator import create_thumbnail
@@ -17,7 +18,7 @@ class MainWindow(QMainWindow):
         self.current_folder = None
         self.image_files = []
         self.current_image_index = -1
-        self.new_folder_path = ""
+        self.new_folder_path = ["folder_1", "folder_2"]
 
         # Create menu bar
         self.create_menu_bar()
@@ -40,17 +41,35 @@ class MainWindow(QMainWindow):
         self.file_list.setMovement(QListWidget.Movement.Static)
         self.file_list.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         
-        # Create splitter
-        self.splitter = QSplitter(Qt.Orientation.Horizontal)
-        self.splitter.addWidget(self.file_list)
-        self.splitter.addWidget(self.image_label)
-        self.splitter.setStretchFactor(1, 1)
-        self.setCentralWidget(self.splitter)
+
+        # Create main splitter
+        main_splitter = QSplitter(Qt.Orientation.Vertical)
         
-        # Create button to select a new folder
-        self.select_folder_button = QPushButton("Select Folder", self)
-        self.select_folder_button.setGeometry(10, 500, 120, 30)
-        self.select_folder_button.clicked.connect(self.select_new_folder)
+
+    
+
+        # Create horizontal splitter for file list and image
+        content_splitter = QSplitter(Qt.Orientation.Horizontal)
+        content_splitter.addWidget(self.file_list)
+        content_splitter.addWidget(self.image_label)
+        content_splitter.setStretchFactor(1, 1)
+
+        # Create folder tabs
+        self.tabs = FolderTab()
+        # self.tabs = QTabWidget()
+
+        # self.tabs.setTabPosition(QTabWidget.TabPosition.South)
+        # self.tabs.setMovable(True)
+        # for folder_name in self.new_folder_path:
+        #     self.tabs.addTab(FolderButton(folder_name), folder_name)
+
+        # Add widgets to main splitter
+        main_splitter.addWidget(content_splitter)
+        main_splitter.addWidget(self.tabs)
+        main_splitter.setStretchFactor(0, 4)  # Make the content area larger than the tabs
+        
+        self.setCentralWidget(main_splitter)
+
 
         # Create status bar
         self.statusBar().show()
@@ -67,6 +86,7 @@ class MainWindow(QMainWindow):
         # Add Open Folder action
         open_folder_action = file_menu.addAction("Open Folder")
         open_folder_action.triggered.connect(self.open_folder)
+
 
 
     def open_image(self):
@@ -113,10 +133,22 @@ class MainWindow(QMainWindow):
             self.next_image()
         elif event.key() == Qt.Key.Key_Left or event.key() == Qt.Key.Key_Up:
             self.previous_image()
-        elif event.key() in [Qt.Key.Key_1, Qt.Key.Key_2, Qt.Key.Key_3, Qt.Key.Key_4, 
-                             Qt.Key.Key_5, Qt.Key.Key_6, Qt.Key.Key_7, Qt.Key.Key_8, 
-                             Qt.Key.Key_9, Qt.Key.Key_0]:
-            copy_current_image_to_new_folder(self.new_folder_path, self.image_files, self.current_image_index)
+        elif event.key() == Qt.Key.Key_1:
+            tab = self.tabs.widget(0)  # Get first tab
+            if tab and tab.get_folder_path():
+                copy_current_image_to_new_folder(
+                    tab.get_folder_path(), 
+                    self.image_files, 
+                    self.current_image_index
+                )
+        elif event.key() == Qt.Key.Key_2:
+            tab = self.tabs.widget(1)  # Get second tab
+            if tab and tab.get_folder_path():
+                copy_current_image_to_new_folder(
+                    tab.get_folder_path(), 
+                    self.image_files, 
+                    self.current_image_index
+                )
 
     def on_file_selected(self, item):
         file_path = item.data(Qt.ItemDataRole.UserRole)
@@ -139,10 +171,10 @@ class MainWindow(QMainWindow):
         load_image(self.image_files[self.current_image_index], self.image_label)
         self.file_list.setCurrentRow(self.current_image_index)
 
-    def select_new_folder(self):
-        """Select a new folder to copy images to."""
-        self.new_folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
-        if self.new_folder_path:
-            folder_name = os.path.basename(self.new_folder_path)  # Get the name of the folder
-            self.select_folder_button.setText(folder_name)  # Update button text to the folder name
-            print(f"New folder selected: {self.new_folder_path}")
+    # def select_new_folder(self):
+    #     """Select a new folder to copy images to."""
+    #     self.new_folder_path = QFileDialog.getExistingDirectory(self, "Select Folder 1")
+    #     if self.new_folder_path:
+    #         folder_name = os.path.basename(self.new_folder_path)  # Get the name of the folder
+    #         self.select_folder_button.setText(folder_name)  # Update button text to the folder name
+    #         print(f"New folder selected: {self.new_folder_path}")
