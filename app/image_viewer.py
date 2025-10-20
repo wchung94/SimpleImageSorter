@@ -7,6 +7,7 @@ import os
 from .image_loader import load_image, load_folder_images
 from .thumbnail_creator import create_thumbnail
 from .file_operations import copy_current_image_to_new_folder
+from .help_window import AnotherWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -44,8 +45,6 @@ class MainWindow(QMainWindow):
 
         # Create main splitter
         main_splitter = QSplitter(Qt.Orientation.Vertical)
-        
-
     
 
         # Create horizontal splitter for file list and image
@@ -56,12 +55,6 @@ class MainWindow(QMainWindow):
 
         # Create folder tabs
         self.tabs = FolderTab()
-        # self.tabs = QTabWidget()
-
-        # self.tabs.setTabPosition(QTabWidget.TabPosition.South)
-        # self.tabs.setMovable(True)
-        # for folder_name in self.new_folder_path:
-        #     self.tabs.addTab(FolderButton(folder_name), folder_name)
 
         # Add widgets to main splitter
         main_splitter.addWidget(content_splitter)
@@ -78,6 +71,7 @@ class MainWindow(QMainWindow):
     def create_menu_bar(self):
         menubar = self.menuBar()
         file_menu = menubar.addMenu("File")
+        help_menu = menubar.addMenu("Help")
         
         # Add Open File action
         open_file_action = file_menu.addAction("Open File")
@@ -87,6 +81,10 @@ class MainWindow(QMainWindow):
         open_folder_action = file_menu.addAction("Open Folder")
         open_folder_action.triggered.connect(self.open_folder)
 
+        # Add Open Help information action
+        open_file_action = help_menu.addAction("Help")
+        open_file_action.triggered.connect(self.help_information)
+        
 
 
     def open_image(self):
@@ -99,6 +97,10 @@ class MainWindow(QMainWindow):
         
         if file_name:
             load_image(file_name, self.image_label)
+
+    def help_information(self):
+        w = AnotherWindow()
+        w.show()
 
     def open_folder(self):
         folder_path = QFileDialog.getExistingDirectory(
