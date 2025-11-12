@@ -3,6 +3,7 @@ from PyQt6.QtCore import QThread, pyqtSignal
 import os
 import subprocess
 import logging
+from glob import glob
 
 class SpeciesnetWorker(QThread):
     """Worker thread to run SpeciesNet without blocking the UI."""
@@ -101,11 +102,15 @@ class SpeciesnetWidget(QWidget):
 
         predictions_json = os.path.join(folder, "predictions.json")
 
+        image_files = ",".join(glob(os.path.join(folder, "*.JPG")))
+
         try:
             cmd = [
                 "python", "-m", "speciesnet.scripts.run_model",
-                "--folders", folder,
-                "--predictions_json", predictions_json
+                #"--folders", folder,
+                "--filepaths", image_files,
+                "--predictions_json", predictions_json,
+                "country", "NL"
             ]
             
             # Create and start worker thread
