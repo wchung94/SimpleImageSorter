@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (QLabel, QMainWindow, QFileDialog, QListWidget, 
-                             QListWidgetItem, QWidget, QHBoxLayout, QSplitter, QPushButton, QTabWidget, QTextEdit)
+                             QListWidgetItem, QWidget, QHBoxLayout, QVBoxLayout, QSplitter, QPushButton, QTabWidget, QTextEdit)
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt, QSize
 import logging
@@ -8,6 +8,7 @@ from .image_loader import load_image, load_folder_images
 from .thumbnail_creator import create_thumbnail
 from .file_operations import copy_current_image_to_new_folder
 from .speciesnet_buttonwidget import SpeciesnetWidget
+from .megadetector_buttonwidget import MegaDetectorWidget
 from .logs_window import LogHandler
 
 class MainWindow(QMainWindow):
@@ -85,12 +86,28 @@ class MainWindow(QMainWindow):
         self.tabs = FolderTab()
         self.speciesnet_widget = SpeciesnetWidget("SpeciesNet")
         self.speciesnet_widget.setMaximumWidth(220)
+
+        # create Megadetector button and stack it under SpeciesNet
+        self.megadetector_button = MegaDetectorWidget("Megadetector")
+        self.megadetector_button.setMaximumWidth(220)
+
+        # left column stacks SpeciesNet and Megadetector horizontally
+        left_stack = QWidget()
+        left_layout = QHBoxLayout()
+        left_layout.setContentsMargins(1, 1, 1, 1)   # small margins
+        left_layout.setSpacing(4)
+        left_layout.addWidget(self.speciesnet_widget)
+        left_layout.addWidget(self.megadetector_button)
+        left_layout.addStretch(1)
+        left_stack.setLayout(left_layout)
+        # ensure the left_stack is aligned to the very left of the bottom area
+        left_layout.addStretch(1)
         
         # Bottom area: speciesnet button at left, folder tabs to the right
         bottom_container = QWidget()
         bottom_layout = QHBoxLayout()
         bottom_layout.setContentsMargins(0, 0, 0, 0)
-        bottom_layout.addWidget(self.speciesnet_widget)
+        bottom_layout.addWidget(left_stack)
         bottom_layout.addWidget(self.tabs, 1)
         bottom_container.setLayout(bottom_layout)
 
